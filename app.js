@@ -1,9 +1,8 @@
-// Registrar o Service Worker
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/service-worker.js')
       .then((registration) => {
-        console.log('Service Worker registrado com sucesso:', registration);
+        console.log('Service Worker registrado:', registration);
       })
       .catch((error) => {
         console.log('Erro ao registrar o Service Worker:', error);
@@ -11,12 +10,6 @@ if ('serviceWorker' in navigator) {
   });
 }
 
-// Função para mostrar o modal
-function showModal() {
-  $('#exampleModal').modal('show');
-}
-
-// Função para gerar e exportar o CSV
 function exportCSV() {
   const username = localStorage.getItem('username');
   const date = new Date().toLocaleString();
@@ -29,23 +22,29 @@ function exportCSV() {
 
   data.forEach((rowArray) => {
     let row = rowArray.join(",");
-    csvContent += row + "\r\n"; // add carriage return to create new row
+    csvContent += row + "\r\n";
   });
 
   const encodedUri = encodeURI(csvContent);
   const link = document.createElement("a");
   link.setAttribute("href", encodedUri);
   link.setAttribute("download", "dados_usuario.csv");
+  document.body.appendChild(link);
   link.click();
+  document.body.removeChild(link);
 }
 
-// Captura do evento de "Acessar"
-document.getElementById('acessarBtn').addEventListener('click', function() {
-  const username = document.getElementById('username').value;
-  if (username) {
-    localStorage.setItem('username', username);  // Armazena o nome do usuário no localStorage
-    window.location.href = 'segunda-pagina.html';  // Redireciona para a segunda página
-  } else {
-    alert('Por favor, digite seu nome!');
+document.addEventListener("DOMContentLoaded", () => {
+  const acessarBtn = document.getElementById("acessarBtn");
+  if (acessarBtn) {
+    acessarBtn.addEventListener("click", () => {
+      const username = document.getElementById("username").value;
+      if (username) {
+        localStorage.setItem("username", username);
+        window.location.href = "segunda-pagina.html";
+      } else {
+        alert("Por favor, digite seu nome!");
+      }
+    });
   }
 });

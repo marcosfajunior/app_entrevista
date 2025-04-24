@@ -38,7 +38,7 @@
       </div>
     </div>
 
-    <!-- Botão para exportar CSV (desabilitado inicialmente) -->
+    <!-- Botão para exportar CSV (inicialmente desabilitado) -->
     <button id="exportBtn" class="btn btn-success btn-block mt-3" onclick="exportCSV()" disabled>Exportar CSV</button>
   </div>
 
@@ -48,9 +48,14 @@
   <script src="app.js"></script>
 
   <script>
+    // Função para mostrar o modal
+    function showModal() {
+      $('#exampleModal').modal('show');
+    }
+
     // Habilitar o botão de exportar CSV após o fechamento do modal
     $('#exampleModal').on('hidden.bs.modal', function () {
-      document.getElementById('exportBtn').disabled = false;
+      document.getElementById('exportBtn').disabled = false;  // Habilita o botão de exportar
     });
   </script>
 </body>

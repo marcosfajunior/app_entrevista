@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pergunta 1</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="manifest" href="manifest.json">
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js')
+        .then(reg => console.log('Service Worker registrado', reg))
+        .catch(err => console.warn('Erro ao registrar Service Worker', err));
+    }
+  </script>
+</head>
+<body class="container mt-5">
+  <h2>Qual seu Bairro?</h2>
+  <div id="bairros">
+    <div class="form-check">
+      <input class="form-check-input" type="radio" name="bairro" value="Centro"> Centro
+    </div>
+    <div class="form-check">
+      <input class="form-check-input" type="radio" name="bairro" value="São Sebastião"> São Sebastião
+    </div>
+    <div class="form-check">
+      <input class="form-check-input" type="radio" name="bairro" value="Santa Tereza I"> Santa Tereza I
+    </div>
+  </div>
+  <button class="btn btn-primary mt-3" id="proxima">Avançar</button>
+
+  <script>
+    document.getElementById('proxima').addEventListener('click', () => {
+      const bairro = document.querySelector('input[name="bairro"]:checked');
+      if (!bairro) return alert('Selecione um bairro.');
+
+      localStorage.setItem('bairroAtual', bairro.value);
+      window.location.href = 'pergunta2.html';
+    });
+  </script>
+</body>
+</html>

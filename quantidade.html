@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quantidade de Questionários</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="manifest" href="manifest.json">
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js')
+        .then(reg => console.log('Service Worker registrado', reg))
+        .catch(err => console.warn('Erro ao registrar Service Worker', err));
+    }
+  </script>
+</head>
+<body class="container mt-5">
+  <h2>Quantos questionários deseja preencher?</h2>
+  <input type="number" id="quantidade" class="form-control mb-3" min="1">
+  <button class="btn btn-success" id="iniciar">Iniciar Pesquisa</button>
+  <button class="btn btn-info mt-3" id="compartilhar">Compartilhar Dados</button>
+
+  <script>
+    document.getElementById('iniciar').addEventListener('click', () => {
+      const qtd = parseInt(document.getElementById('quantidade').value);
+      if (qtd > 0) {
+        localStorage.setItem('totalQuestionarios', qtd);
+        localStorage.setItem('atualQuestionario', 0);
+        window.location.href = 'pergunta1.html';
+      } else {
+        alert('Digite uma quantidade válida.');
+      }
+    });
+
+    document.getElementById('compartilhar').addEventListener('click', () => {
+      const respostas = JSON.parse(localStorage.getItem('respostas') || '[]');
+      if (respostas.length === 0) return alert('Nenhum dado para compartilhar.');
+      
+      const csv = ["Nome,Bairro,Meio de Transporte,Detalhe"].concat(
+        respostas.map(r => [r.nome, r.bairro, r.transporte, r.detalhe].join(","))
+      ).join("\n");
+
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const file = new File([blob], 'respostas.csv', { type: 'text/csv' });
+
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        navigator.share({
+          title: 'Respostas da Pesquisa',
+          files: [file]
+        }).catch(err => console.error('Erro ao compartilhar', err));
+      } else {
+        alert('Navegador não suporta compartilhamento.');
+      }
+    });
+  </script>
+</body>
+</html>

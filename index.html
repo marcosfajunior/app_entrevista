@@ -1,25 +1,35 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PWA - Teste</title>
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
-  <link rel="manifest" href="manifest.json" />
-  <meta name="theme-color" content="#007bff" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Início</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="manifest" href="manifest.json">
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js')
+        .then(reg => console.log('Service Worker registrado', reg))
+        .catch(err => console.warn('Erro ao registrar Service Worker', err));
+    }
+  </script>
 </head>
-<body>
-  <div class="container mt-5">
-    <h1 class="text-center">Bem-vindo ao PWA</h1>
-    <div class="form-group">
-      <label for="username">Digite seu nome:</label>
-      <input type="text" id="username" class="form-control" placeholder="Digite seu nome" />
-    </div>
-    <button id="acessarBtn" class="btn btn-primary btn-block">Acessar</button>
-  </div>
-  <script src="app.js"></script>
-  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<body class="container mt-5">
+  <h2>Digite seu nome</h2>
+  <input type="text" id="username" class="form-control mb-3">
+  <button id="startBtn" class="btn btn-primary">Continuar</button>
+
+  <script>
+    document.getElementById('startBtn').addEventListener('click', function () {
+      const name = document.getElementById('username').value.trim();
+      if (name) {
+        localStorage.setItem('username', name);
+        localStorage.setItem('respostas', '[]');
+        window.location.href = 'quantidade.html';
+      } else {
+        alert('Digite seu nome para continuar.');
+      }
+    });
+  </script>
 </body>
 </html>

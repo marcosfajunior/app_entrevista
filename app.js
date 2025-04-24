@@ -1,47 +1,56 @@
-// Registrar o Service Worker
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/service-worker.js')
-      .then((registration) => {
-        console.log('Service Worker registrado com sucesso:', registration);
-      })
-      .catch((error) => {
-        console.log('Erro ao registrar o Service Worker:', error);
-      });
-  });
+// Criar ou abrir o banco IndexedDB
+let db;
+
+const request = indexedDB.open('PesquisaDB', 1);
+
+request.onupgradeneeded = function(e) {
+  db = e.target.result;
+  if (!db.objectStoreNames.contains('responses')) {
+    db.createObjectStore('responses', { keyPath: 'id', autoIncrement: true });
+  }
+};
+
+request.onsuccess = function(e) {
+  db = e.target.result;
+};
+
+request.onerror = function(e) {
+  console.log('Erro ao abrir IndexedDB', e);
+};
+
+// Função para salvar os dados no IndexedDB
+function saveToIndexedDB(username, dataHora, bairro, veiculo, condicionalInput) {
+  const transaction = db.transaction(['responses'], 'readwrite');
+  const store = transaction.objectStore('responses');
+  const data = {
+    username: username,
+    dataHora: dataHora,
+    bairro: bairro,
+    veiculo: veiculo,
+    condicionalInput: condicionalInput
+  };
+  store.add(data);
 }
 
-// Função para mostrar o modal
-function showModal() {
-  $('#exampleModal').modal('show');
-}
-
-// Função para gerar e compartilhar o CSV
+// Função para exportar os dados para CSV
 function exportCSV() {
-  const username = localStorage.getItem('username');
-  const date = new Date().toLocaleString();
-  const csvContent = `Nome do Usuário,Data e Hora\n${username},${date}\n`;
-  const blob = new Blob([csvContent], { type: 'text/csv' });
-  const file = new File([blob], 'dados_usuario.csv', { type: 'text/csv' });
+  const transaction = db.transaction(['responses'], 'readonly');
+  const store = transaction.objectStore('responses');
+  const request = store.getAll();
 
-  if (navigator.canShare && navigator.canShare({ files: [file] })) {
-    navigator.share({
-      title: 'Dados do Usuário',
-      text: 'Segue os dados exportados do PWA.',
-      files: [file]
-    }).catch(error => console.error('Erro ao compartilhar:', error));
-  } else {
-    alert('Seu navegador não suporta compartilhamento de arquivos.');
-  }
+  request.onsuccess = function(e) {
+    const data = e.target.result;
+    let csvContent = "data:text/csv;charset=utf-8,";
+
+    data.forEach(function(row) {
+      const rowArray = [row.username, row.dataHora, row.bairro, row.veiculo, row.condicionalInput];
+      csvContent += rowArray.join(",") + "\r\n";
+    });
+
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "dados_usuario.csv");
+    link.click();
+  };
 }
-
-// Captura do evento de "Acessar"
-document.getElementById('acessarBtn').addEventListener('click', function() {
-  const username = document.getElementById('username').value;
-  if (username) {
-    localStorage.setItem('username', username);  // Armazena o nome do usuário no localStorage
-    window.location.href = 'segunda-pagina.html';  // Redireciona para a segunda página
-  } else {
-    alert('Por favor, digite seu nome!');
-  }
-});

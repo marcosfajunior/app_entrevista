@@ -21,9 +21,7 @@
     document.getElementById('avancarBtn').addEventListener('click', function() {
       const bairro = document.querySelector('input[name="bairro"]:checked');
       if (bairro) {
-        const username = localStorage.getItem('username');
-        const dataHora = new Date().toLocaleString();
-        saveToIndexedDB(username, dataHora, bairro.value);
+        localStorage.setItem('bairro', bairro.value);
         window.location.href = 'pergunta2.html';
       } else {
         alert('Por favor, selecione um bairro!');

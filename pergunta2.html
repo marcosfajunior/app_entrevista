@@ -45,8 +45,11 @@
 
       if (veiculo && (condicionalInput || !document.getElementById('condicional').style.display)) {
         const username = localStorage.getItem('username');
+        const bairro = localStorage.getItem('bairro');
         const dataHora = new Date().toLocaleString();
-        saveToIndexedDB(username, dataHora, { bairro: localStorage.getItem('bairro'), veiculo: veiculo.value, condicionalInput });
+        
+        // Salvar dados no IndexedDB
+        saveToIndexedDB(username, dataHora, bairro, veiculo.value, condicionalInput);
         window.location.href = 'fim.html';
       } else {
         alert('Por favor, preencha todas as respostas!');

@@ -1,71 +1,59 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Pergunta 2</title>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-  <link rel="manifest" href="manifest.json">
-  <script>
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('service-worker.js')
-        .then(reg => console.log('Service Worker registrado', reg))
-        .catch(err => console.warn('Erro ao registrar Service Worker', err));
-    }
-  </script>
 </head>
 <body class="container mt-5">
   <h2>Possui Carro ou Moto?</h2>
   <div>
-    <div class="form-check">
-      <input class="form-check-input" type="radio" name="meio" value="Carro" id="carro"> Carro
-    </div>
-    <div class="form-check">
-      <input class="form-check-input" type="radio" name="meio" value="Moto" id="moto"> Moto
-    </div>
+    <input type="radio" name="meio" value="carro" id="carro"> Carro
+    <input type="radio" name="meio" value="moto" id="moto"> Moto
   </div>
-
-  <div class="mt-3" id="extra" style="display:none;">
-    <label id="extraLabel"></label>
-    <input type="text" id="extraInput" class="form-control">
+  <div id="detalhe" style="display:none;">
+    <input type="text" id="inputDetalhe" class="form-control" placeholder="Qual é a cor do carro?">
   </div>
-
-  <button class="btn btn-primary mt-3" id="proxima" disabled>Avançar</button>
+  <div id="anoMoto" style="display:none;">
+    <input type="number" id="inputAnoMoto" class="form-control" placeholder="Qual é o ano da moto?">
+  </div>
+  <button class="btn btn-primary mt-3" id="avancarBtn" disabled>Avançar</button>
 
   <script>
-    const radios = document.querySelectorAll('input[name="meio"]');
-    const extraDiv = document.getElementById('extra');
-    const label = document.getElementById('extraLabel');
-    const input = document.getElementById('extraInput');
-    const btn = document.getElementById('proxima');
+    document.querySelectorAll('input[name="meio"]').forEach(radio => {
+      radio.addEventListener('change', function() {
+        if (this.value === 'carro') {
+          document.getElementById('detalhe').style.display = 'block';
+          document.getElementById('anoMoto').style.display = 'none';
+        } else if (this.value === 'moto') {
+          document.getElementById('anoMoto').style.display = 'block';
+          document.getElementById('detalhe').style.display = 'none';
+        }
 
-    radios.forEach(r => {
-      r.addEventListener('change', () => {
-        extraDiv.style.display = 'block';
-        input.value = '';
-        btn.disabled = true;
-
-        if (r.value === 'Carro') label.textContent = 'Qual é a cor do carro?';
-        else label.textContent = 'Qual é o ano da moto?';
-
-        input.oninput = () => {
-          btn.disabled = input.value.trim() === '';
-        };
+        document.getElementById('avancarBtn').disabled = false;
       });
     });
 
-    btn.addEventListener('click', () => {
+    document.getElementById('avancarBtn').addEventListener('click', function() {
       const transporte = document.querySelector('input[name="meio"]:checked').value;
-      const detalhe = input.value.trim();
-      const respostas = JSON.parse(localStorage.getItem('respostas') || '[]');
+      let detalhe = '';
 
+      if (transporte === 'carro') {
+        detalhe = document.getElementById('inputDetalhe').value.trim();
+        if (!detalhe) return alert('Por favor, informe a cor do carro.');
+      } else if (transporte === 'moto') {
+        detalhe = document.getElementById('inputAnoMoto').value.trim();
+        if (!detalhe) return alert('Por favor, informe o ano da moto.');
+      }
+
+      const respostas = JSON.parse(localStorage.getItem('respostas') || '[]');
       respostas.push({
         nome: localStorage.getItem('username'),
         bairro: localStorage.getItem('bairroAtual'),
         transporte,
         detalhe
       });
-
       localStorage.setItem('respostas', JSON.stringify(respostas));
 
       let atual = parseInt(localStorage.getItem('atualQuestionario'));
@@ -73,7 +61,11 @@
       atual += 1;
       localStorage.setItem('atualQuestionario', atual);
 
-      window.location.href = 'fim.html';
+      if (atual <= total) {
+        window.location.href = 'fim.html'; // Redireciona para a tela de conclusão
+      } else {
+        window.location.href = 'quantidade.html'; // Redireciona de volta para a tela de quantidade de questionários
+      }
     });
   </script>
 </body>

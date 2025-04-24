@@ -1,11 +1,10 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Quantidade de Questionários</title>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-  <link rel="manifest" href="manifest.json">
   <script>
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('service-worker.js')
@@ -15,23 +14,30 @@
   </script>
 </head>
 <body class="container mt-5">
-  <h2>Quantos questionários deseja preencher?</h2>
-  <input type="number" id="quantidade" class="form-control mb-3" min="1">
-  <button class="btn btn-success" id="iniciar">Iniciar Pesquisa</button>
-  <button class="btn btn-info mt-3" id="compartilhar">Compartilhar Dados</button>
+  <h2>Quantos questionários você deseja preencher?</h2>
+  <input type="number" id="totalQuestionarios" class="form-control" placeholder="Quantidade de questionários" required>
+  <button class="btn btn-primary mt-3" id="iniciarPesquisaBtn">Iniciar Pesquisa</button>
+  <button class="btn btn-success mt-3" id="compartilhar" style="display:none;">Compartilhar Dados</button>
 
   <script>
-    document.getElementById('iniciar').addEventListener('click', () => {
-      const qtd = parseInt(document.getElementById('quantidade').value);
-      if (qtd > 0) {
-        localStorage.setItem('totalQuestionarios', qtd);
-        localStorage.setItem('atualQuestionario', 0);
-        window.location.href = 'pergunta1.html';
+    // Carregar a quantidade de questionários do localStorage
+    const totalQuestionarios = localStorage.getItem('totalQuestionarios');
+    if (totalQuestionarios) {
+      document.getElementById('totalQuestionarios').value = totalQuestionarios;
+    }
+
+    document.getElementById('iniciarPesquisaBtn').addEventListener('click', function() {
+      const quantidade = document.getElementById('totalQuestionarios').value;
+      if (quantidade) {
+        localStorage.setItem('totalQuestionarios', quantidade);
+        localStorage.setItem('atualQuestionario', 1);  // Inicia o contador de questionários
+        window.location.href = 'pergunta1.html';  // Redireciona para a primeira pergunta
       } else {
-        alert('Digite uma quantidade válida.');
+        alert('Por favor, insira a quantidade de questionários!');
       }
     });
 
+    // Função de compartilhamento
     document.getElementById('compartilhar').addEventListener('click', () => {
       const respostas = JSON.parse(localStorage.getItem('respostas') || '[]');
       if (respostas.length === 0) return alert('Nenhum dado para compartilhar.');

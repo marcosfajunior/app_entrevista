@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Início</title>
+  <title>Página Inicial</title>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
   <link rel="manifest" href="manifest.json">
   <script>
@@ -15,19 +15,18 @@
   </script>
 </head>
 <body class="container mt-5">
-  <h2>Digite seu nome</h2>
-  <input type="text" id="username" class="form-control mb-3">
-  <button id="startBtn" class="btn btn-primary">Continuar</button>
+  <h2>Digite seu Nome</h2>
+  <input type="text" id="username" class="form-control" placeholder="Nome do Usuário" required>
+  <button class="btn btn-primary mt-3" id="acessarBtn">Acessar</button>
 
   <script>
-    document.getElementById('startBtn').addEventListener('click', function () {
-      const name = document.getElementById('username').value.trim();
-      if (name) {
-        localStorage.setItem('username', name);
-        localStorage.setItem('respostas', '[]');
-        window.location.href = 'quantidade.html';
+    document.getElementById('acessarBtn').addEventListener('click', function() {
+      const username = document.getElementById('username').value;
+      if (username) {
+        localStorage.setItem('username', username); // Armazena o nome do usuário
+        window.location.href = 'quantidade.html';  // Redireciona para a próxima página
       } else {
-        alert('Digite seu nome para continuar.');
+        alert('Por favor, digite seu nome!');
       }
     });
   </script>

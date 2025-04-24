@@ -3,32 +3,28 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Página Inicial</title>
+  <title>Pesquisa</title>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
   <link rel="manifest" href="manifest.json">
-  <script>
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('service-worker.js')
-        .then(reg => console.log('Service Worker registrado', reg))
-        .catch(err => console.warn('Erro ao registrar Service Worker', err));
-    }
-  </script>
 </head>
-<body class="container mt-5">
-  <h2>Digite seu Nome</h2>
-  <input type="text" id="username" class="form-control" placeholder="Nome do Usuário" required>
-  <button class="btn btn-primary mt-3" id="acessarBtn">Acessar</button>
+<body>
+  <div class="container">
+    <h2>Pesquisa</h2>
+    <input type="text" id="username" class="form-control" placeholder="Digite seu nome">
+    <button id="acessarBtn" class="btn btn-primary mt-3">Acessar</button>
+  </div>
 
   <script>
     document.getElementById('acessarBtn').addEventListener('click', function() {
       const username = document.getElementById('username').value;
       if (username) {
-        localStorage.setItem('username', username); // Armazena o nome do usuário
-        window.location.href = 'quantidade.html';  // Redireciona para a próxima página
+        localStorage.setItem('username', username);
+        window.location.href = 'quantidade.html';
       } else {
         alert('Por favor, digite seu nome!');
       }
     });
   </script>
+  <script src="app.js"></script>
 </body>
 </html>

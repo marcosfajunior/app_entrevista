@@ -3,28 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Fim da Pesquisa</title>
+  <title>Pesquisa Concluída</title>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-  <script>
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('service-worker.js')
-        .then(reg => console.log('Service Worker registrado', reg))
-        .catch(err => console.warn('Erro ao registrar Service Worker', err));
-    }
-  </script>
 </head>
-<body class="container mt-5">
-  <h2>Pesquisa Concluída</h2>
-  <p>Obrigado por participar!</p>
-
-  <button class="btn btn-primary" id="novaPesquisa">Nova Pesquisa</button>
+<body>
+  <div class="container">
+    <h2>Pesquisa Concluída!</h2>
+    <button id="novaPesquisaBtn" class="btn btn-primary mt-3">Nova Pesquisa</button>
+  </div>
 
   <script>
-    document.getElementById('novaPesquisa').addEventListener('click', () => {
-      let atual = parseInt(localStorage.getItem('atualQuestionario'));
-      const total = parseInt(localStorage.getItem('totalQuestionarios'));
-
-      if (atual < total) {
+    document.getElementById('novaPesquisaBtn').addEventListener('click', function() {
+      let questionariosRestantes = localStorage.getItem('totalQuestionarios') - 1;
+      if (questionariosRestantes > 0) {
+        localStorage.setItem('totalQuestionarios', questionariosRestantes);
         window.location.href = 'pergunta1.html';
       } else {
         window.location.href = 'quantidade.html';

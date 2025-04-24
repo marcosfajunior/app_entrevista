@@ -5,58 +5,28 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Quantidade de Questionários</title>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-  <script>
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('service-worker.js')
-        .then(reg => console.log('Service Worker registrado', reg))
-        .catch(err => console.warn('Erro ao registrar Service Worker', err));
-    }
-  </script>
 </head>
-<body class="container mt-5">
-  <h2>Quantos questionários você deseja preencher?</h2>
-  <input type="number" id="totalQuestionarios" class="form-control" placeholder="Quantidade de questionários" required>
-  <button class="btn btn-primary mt-3" id="iniciarPesquisaBtn">Iniciar Pesquisa</button>
-  <button class="btn btn-success mt-3" id="compartilhar" style="display:none;">Compartilhar Dados</button>
+<body>
+  <div class="container">
+    <h2>Defina a quantidade de questionários</h2>
+    <input type="number" id="totalQuestionarios" class="form-control" placeholder="Quantidade de questionários">
+    <button id="iniciarPesquisaBtn" class="btn btn-primary mt-3">Iniciar Pesquisa</button>
+    <button id="compartilharBtn" class="btn btn-success mt-3" style="display: none;">Compartilhar CSV</button>
+  </div>
 
   <script>
-    // Carregar a quantidade de questionários do localStorage
-    const totalQuestionarios = localStorage.getItem('totalQuestionarios');
-    if (totalQuestionarios) {
-      document.getElementById('totalQuestionarios').value = totalQuestionarios;
-    }
-
     document.getElementById('iniciarPesquisaBtn').addEventListener('click', function() {
-      const quantidade = document.getElementById('totalQuestionarios').value;
-      if (quantidade) {
-        localStorage.setItem('totalQuestionarios', quantidade);
-        localStorage.setItem('atualQuestionario', 1);  // Inicia o contador de questionários
-        window.location.href = 'pergunta1.html';  // Redireciona para a primeira pergunta
+      const totalQuestionarios = document.getElementById('totalQuestionarios').value;
+      if (totalQuestionarios) {
+        localStorage.setItem('totalQuestionarios', totalQuestionarios);
+        window.location.href = 'pergunta1.html';
       } else {
         alert('Por favor, insira a quantidade de questionários!');
       }
     });
 
-    // Função de compartilhamento
-    document.getElementById('compartilhar').addEventListener('click', () => {
-      const respostas = JSON.parse(localStorage.getItem('respostas') || '[]');
-      if (respostas.length === 0) return alert('Nenhum dado para compartilhar.');
-      
-      const csv = ["Nome,Bairro,Meio de Transporte,Detalhe"].concat(
-        respostas.map(r => [r.nome, r.bairro, r.transporte, r.detalhe].join(","))
-      ).join("\n");
-
-      const blob = new Blob([csv], { type: 'text/csv' });
-      const file = new File([blob], 'respostas.csv', { type: 'text/csv' });
-
-      if (navigator.canShare && navigator.canShare({ files: [file] })) {
-        navigator.share({
-          title: 'Respostas da Pesquisa',
-          files: [file]
-        }).catch(err => console.error('Erro ao compartilhar', err));
-      } else {
-        alert('Navegador não suporta compartilhamento.');
-      }
+    document.getElementById('compartilharBtn').addEventListener('click', function() {
+      exportCSV();
     });
   </script>
 </body>

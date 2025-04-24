@@ -6,27 +6,28 @@
   <title>Pergunta 1</title>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
-<body class="container mt-5">
-  <h2>Qual seu Bairro?</h2>
-  <div>
-    <input type="radio" name="bairro" value="Centro" id="bairroCentro"> Centro
-    <input type="radio" name="bairro" value="São Sebastião" id="bairroSaoSebastiao"> São Sebastião
-    <input type="radio" name="bairro" value="Santa Tereza I" id="bairroSantaTereza"> Santa Tereza I
+<body>
+  <div class="container">
+    <h2>Qual seu Bairro?</h2>
+    <div>
+      <input type="radio" id="centro" name="bairro" value="Centro"> Centro
+      <input type="radio" id="saoSebastiao" name="bairro" value="São Sebastião"> São Sebastião
+      <input type="radio" id="santaTereza" name="bairro" value="Santa Tereza I"> Santa Tereza I
+    </div>
+    <button id="avancarBtn" class="btn btn-primary mt-3">Avançar</button>
   </div>
-  <button class="btn btn-primary mt-3" id="avancarBtn" disabled>Avançar</button>
 
   <script>
-    document.querySelectorAll('input[name="bairro"]').forEach(radio => {
-      radio.addEventListener('change', () => {
-        document.getElementById('avancarBtn').disabled = false;
-      });
-    });
-
     document.getElementById('avancarBtn').addEventListener('click', function() {
-      const bairro = document.querySelector('input[name="bairro"]:checked').value;
-      localStorage.setItem('bairroAtual', bairro); // Salva o bairro atual
-
-      window.location.href = 'pergunta2.html'; // Redireciona para a próxima pergunta
+      const bairro = document.querySelector('input[name="bairro"]:checked');
+      if (bairro) {
+        const username = localStorage.getItem('username');
+        const dataHora = new Date().toLocaleString();
+        saveToIndexedDB(username, dataHora, bairro.value);
+        window.location.href = 'pergunta2.html';
+      } else {
+        alert('Por favor, selecione um bairro!');
+      }
     });
   </script>
 </body>

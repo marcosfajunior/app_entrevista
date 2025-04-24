@@ -6,65 +6,50 @@
   <title>Pergunta 2</title>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
-<body class="container mt-5">
-  <h2>Possui Carro ou Moto?</h2>
-  <div>
-    <input type="radio" name="meio" value="carro" id="carro"> Carro
-    <input type="radio" name="meio" value="moto" id="moto"> Moto
+<body>
+  <div class="container">
+    <h2>Possui Carro ou Moto?</h2>
+    <div>
+      <input type="radio" id="carro" name="veiculo" value="Carro"> Carro
+      <input type="radio" id="moto" name="veiculo" value="Moto"> Moto
+    </div>
+    <div id="condicional" style="display: none;">
+      <label id="condicionalLabel"></label>
+      <input type="text" id="condicionalInput" class="form-control">
+    </div>
+    <button id="avancarBtn" class="btn btn-primary mt-3">Avançar</button>
   </div>
-  <div id="detalhe" style="display:none;">
-    <input type="text" id="inputDetalhe" class="form-control" placeholder="Qual é a cor do carro?">
-  </div>
-  <div id="anoMoto" style="display:none;">
-    <input type="number" id="inputAnoMoto" class="form-control" placeholder="Qual é o ano da moto?">
-  </div>
-  <button class="btn btn-primary mt-3" id="avancarBtn" disabled>Avançar</button>
 
   <script>
-    document.querySelectorAll('input[name="meio"]').forEach(radio => {
-      radio.addEventListener('change', function() {
-        if (this.value === 'carro') {
-          document.getElementById('detalhe').style.display = 'block';
-          document.getElementById('anoMoto').style.display = 'none';
-        } else if (this.value === 'moto') {
-          document.getElementById('anoMoto').style.display = 'block';
-          document.getElementById('detalhe').style.display = 'none';
+    document.querySelectorAll('input[name="veiculo"]').forEach(input => {
+      input.addEventListener('change', function() {
+        const veiculo = document.querySelector('input[name="veiculo"]:checked').value;
+        const condicional = document.getElementById('condicional');
+        const condicionalLabel = document.getElementById('condicionalLabel');
+        
+        if (veiculo === "Carro") {
+          condicionalLabel.textContent = "Qual é a cor do carro?";
+          condicional.style.display = "block";
+        } else if (veiculo === "Moto") {
+          condicionalLabel.textContent = "Qual é o ano da moto?";
+          condicional.style.display = "block";
+        } else {
+          condicional.style.display = "none";
         }
-
-        document.getElementById('avancarBtn').disabled = false;
       });
     });
 
     document.getElementById('avancarBtn').addEventListener('click', function() {
-      const transporte = document.querySelector('input[name="meio"]:checked').value;
-      let detalhe = '';
+      const veiculo = document.querySelector('input[name="veiculo"]:checked');
+      const condicionalInput = document.getElementById('condicionalInput').value;
 
-      if (transporte === 'carro') {
-        detalhe = document.getElementById('inputDetalhe').value.trim();
-        if (!detalhe) return alert('Por favor, informe a cor do carro.');
-      } else if (transporte === 'moto') {
-        detalhe = document.getElementById('inputAnoMoto').value.trim();
-        if (!detalhe) return alert('Por favor, informe o ano da moto.');
-      }
-
-      const respostas = JSON.parse(localStorage.getItem('respostas') || '[]');
-      respostas.push({
-        nome: localStorage.getItem('username'),
-        bairro: localStorage.getItem('bairroAtual'),
-        transporte,
-        detalhe
-      });
-      localStorage.setItem('respostas', JSON.stringify(respostas));
-
-      let atual = parseInt(localStorage.getItem('atualQuestionario'));
-      const total = parseInt(localStorage.getItem('totalQuestionarios'));
-      atual += 1;
-      localStorage.setItem('atualQuestionario', atual);
-
-      if (atual <= total) {
-        window.location.href = 'fim.html'; // Redireciona para a tela de conclusão
+      if (veiculo && (condicionalInput || !document.getElementById('condicional').style.display)) {
+        const username = localStorage.getItem('username');
+        const dataHora = new Date().toLocaleString();
+        saveToIndexedDB(username, dataHora, { bairro: localStorage.getItem('bairro'), veiculo: veiculo.value, condicionalInput });
+        window.location.href = 'fim.html';
       } else {
-        window.location.href = 'quantidade.html'; // Redireciona de volta para a tela de quantidade de questionários
+        alert('Por favor, preencha todas as respostas!');
       }
     });
   </script>

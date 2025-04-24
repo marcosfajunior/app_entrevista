@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PWA - Página 2</title>
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#007bff" />
+  <style>
+    #modal {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: white;
+      padding: 20px;
+      border: 1px solid #007bff;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    #exportCSVBtn {
+      display: none; /* O botão ficará escondido até o modal ser fechado */
+    }
+  </style>
+</head>
+<body>
+  <h1>Olá, bem-vindo à Página 2</h1>
+  <button id="showModalBtn">Mostrar Modal</button>
+  <button id="exportCSVBtn">Exportar CSV</button>
+
+  <div id="modal">
+    <p>TESTE DE PWA</p>
+    <button id="closeModalBtn">Fechar</button>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

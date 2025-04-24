@@ -13,5 +13,11 @@ if ('serviceWorker' in navigator) {
 
 // Exemplo de ação para o botão de acessar
 document.getElementById('acessarBtn').addEventListener('click', function() {
-  alert("Você clicou no botão de acessar!");
+  const username = document.getElementById('username').value;
+  if (username) {
+    localStorage.setItem('username', username);
+    alert("Você clicou no botão de acessar!");
+  } else {
+    alert('Por favor, digite seu nome!');
+  }
 });

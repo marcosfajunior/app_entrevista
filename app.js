@@ -1,8 +1,9 @@
+// Registrar o Service Worker
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/service-worker.js')
       .then((registration) => {
-        console.log('Service Worker registrado:', registration);
+        console.log('Service Worker registrado com sucesso:', registration);
       })
       .catch((error) => {
         console.log('Erro ao registrar o Service Worker:', error);
@@ -10,41 +11,37 @@ if ('serviceWorker' in navigator) {
   });
 }
 
+// Função para mostrar o modal
+function showModal() {
+  $('#exampleModal').modal('show');
+}
+
+// Função para gerar e compartilhar o CSV
 function exportCSV() {
   const username = localStorage.getItem('username');
   const date = new Date().toLocaleString();
-  const data = [
-    ['Nome do Usuário', 'Data e Hora'],
-    [username, date]
-  ];
+  const csvContent = `Nome do Usuário,Data e Hora\n${username},${date}\n`;
+  const blob = new Blob([csvContent], { type: 'text/csv' });
+  const file = new File([blob], 'dados_usuario.csv', { type: 'text/csv' });
 
-  let csvContent = "data:text/csv;charset=utf-8,";
-
-  data.forEach((rowArray) => {
-    let row = rowArray.join(",");
-    csvContent += row + "\r\n";
-  });
-
-  const encodedUri = encodeURI(csvContent);
-  const link = document.createElement("a");
-  link.setAttribute("href", encodedUri);
-  link.setAttribute("download", "dados_usuario.csv");
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
+  if (navigator.canShare && navigator.canShare({ files: [file] })) {
+    navigator.share({
+      title: 'Dados do Usuário',
+      text: 'Segue os dados exportados do PWA.',
+      files: [file]
+    }).catch(error => console.error('Erro ao compartilhar:', error));
+  } else {
+    alert('Seu navegador não suporta compartilhamento de arquivos.');
+  }
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  const acessarBtn = document.getElementById("acessarBtn");
-  if (acessarBtn) {
-    acessarBtn.addEventListener("click", () => {
-      const username = document.getElementById("username").value;
-      if (username) {
-        localStorage.setItem("username", username);
-        window.location.href = "segunda-pagina.html";
-      } else {
-        alert("Por favor, digite seu nome!");
-      }
-    });
+// Captura do evento de "Acessar"
+document.getElementById('acessarBtn').addEventListener('click', function() {
+  const username = document.getElementById('username').value;
+  if (username) {
+    localStorage.setItem('username', username);  // Armazena o nome do usuário no localStorage
+    window.location.href = 'segunda-pagina.html';  // Redireciona para a segunda página
+  } else {
+    alert('Por favor, digite seu nome!');
   }
 });
